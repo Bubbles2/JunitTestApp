@@ -1,5 +1,10 @@
 package matcom.dcf.junittestapp;
 
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.graphics.Bitmap;
+import android.os.Environment;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.UiThreadTest;
@@ -11,6 +16,11 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import static junit.framework.Assert.assertNotNull;
 
@@ -24,6 +34,7 @@ public class Ju4  {
     private MainActivity myactivity;
     private Button mClickMeButton;
     private TextView mFrom;
+    FileOutputStream fos;
 
     //
 
@@ -42,11 +53,41 @@ public class Ju4  {
     }
    @Test
     public void testLaunchingSubActivityFiresIntentAndFinishesSelf() {
+       //
+       // Get Screenshot
+       Bitmap screenshot = InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();
+//       File fldr = new File(Environment.getExternalStorageState()+"/DF");
+//       if (!fldr.exists()) {
+//           boolean success = fldr.mkdir();
+//       }
+
+       String file = saveToInternalSorage(screenshot);
+       //
         //Retrieve the top-level window decor view
         final View decorView = main.get().getWindow().getDecorView();
 
         //Verify that the mClickMeButton is on screen
         assertNotNull(mClickMeButton);
+    }
+    private String saveToInternalSorage(Bitmap bitmapImage){
+        ContextWrapper cw = new ContextWrapper(main.get());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath=new File(directory,"profile.jpg");
+
+        FileOutputStream fos = null;
+        try {
+
+            fos = new FileOutputStream(mypath);
+
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return directory.getAbsolutePath();
     }
 
 }
