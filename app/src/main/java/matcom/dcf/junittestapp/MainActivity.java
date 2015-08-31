@@ -10,6 +10,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 
+/**
+ *  Simple converter Activity
+ */
 public class MainActivity extends Activity {
 
     EditText from;
@@ -44,6 +47,12 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * This manages the conversion button
+     *
+     *  @param   view id of View
+     * @return void
+     */
     public void convert(View view) {
         from = (EditText) findViewById(R.id.txtFrom);
         to = (EditText)   findViewById(R.id.txtTo);

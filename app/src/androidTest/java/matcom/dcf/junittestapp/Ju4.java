@@ -67,6 +67,7 @@ public class Ju4  {
         final View decorView = main.get().getWindow().getDecorView();
 
         //Verify that the mClickMeButton is on screen
+       Spoon.screenshot(main.get(), "initial_state");
         assertNotNull(mClickMeButton);
     }
     private String saveToInternalSorage(Bitmap bitmapImage){

@@ -49,7 +49,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
     public void testLaunchingSubActivityFiresIntentAndFinishesSelf() {
         //Retrieve the top-level window decor view
         final View decorView = myactivity.getWindow().getDecorView();
-
+        //Spoon.screenshot(myactivity, "initial_state");
         //Verify that the mClickMeButton is on screen
         assertNotNull(mClickMeButton);
     }
