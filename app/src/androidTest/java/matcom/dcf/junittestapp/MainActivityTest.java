@@ -25,8 +25,8 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
     //
     private MainActivity myactivity;
     private Button mClickMeButton;
-    private TextView mFrom;
-    private TextView mTo;
+    private EditNumber mFrom;
+    private EditNumber mTo;
 
     //
 
@@ -48,8 +48,8 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         //
         //Get references to all views
         mClickMeButton = (Button) myactivity.findViewById(R.id.btnConvert);
-        mFrom = (TextView) myactivity.findViewById(R.id.txtFrom);
-        mTo =  (TextView) myactivity.findViewById(R.id.txtTo);
+        mFrom = (EditNumber) myactivity.findViewById(R.id.txtFrom);
+        mTo =  (EditNumber) myactivity.findViewById(R.id.txtTo);
 
     }
 
@@ -133,6 +133,38 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
                 "Expected 0x%02x but was 0x%02x", expectedGravity, actual);
         assertEquals(errorMessage, expectedGravity, actual);
     }
+    //
+
+    /**
+     *  Test space is available for keyboard
+     *  Should probably put in a scroll view
+     */
+    public void testVirtualKeyboardSpaceReserved() {
+        int expected = getIntPixelSize(R.dimen.keyboard_space);
+        int actual = mTo.getBottom();
+        String errorMessage =
+                "Space not reserved, expected " + expected + " actual " + actual;
+        assertTrue(errorMessage, actual <= expected);
+    }
+    @UiThreadTest
+    /**
+     *  Test conversion
+     */
+    public void testFahrenheitToCelsiusConversion() {
+        mFrom.clear();
+        mTo.clear();
+        mFrom.requestFocus();
+        mFrom.setText("32.5");
+        mTo.requestFocus();
+        double f = 32.5;
+        double expectedC = TemperatureConverter.fahrenheitToCelsius(f);
+        double actualC = mFrom.getNumber();
+        double delta = Math.abs(expectedC - actualC);
+        String msg = "" + f + "F -> " + expectedC + "C but was "
+                + actualC + "C (delta " + delta + ")";
+        assertTrue(msg, delta < 0.005);
+    }
+
     @UiThreadTest
     public void testLaunchingSubActivityFiresIntentAndFinishesSelf() {
         //Retrieve the top-level window decor view
@@ -140,6 +172,20 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         //Spoon.screenshot(myactivity, "initial_state");
         //Verify that the mClickMeButton is on screen
         assertNotNull(mClickMeButton);
+    }
+
+    /**
+     * Convenience method to convert pixel size to in
+     *
+     * @param dimensionResourceId
+     * @return
+     */
+    private int getIntPixelSize(int dimensionResourceId) {
+        return (int) getFloatPixelSize(dimensionResourceId);
+    }
+    private float getFloatPixelSize(int dimensionResourceId) {
+        return getActivity().getResources()
+                .getDimensionPixelSize(dimensionResourceId);
     }
 
 }
